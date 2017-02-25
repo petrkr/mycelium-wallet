@@ -491,7 +491,12 @@ public class ModernMain extends ActionBarActivity {
       try {
          String fileName = "electrum_labels_testnet.json";
          File file = new File(Environment.getExternalStorageDirectory(), fileName);
+         if (!file.exists()) {
+           _toaster.toast(String.format("Import file \"%s\" does not exists on SD card.", file.getName()), false);
+            return;
+         }
          ImportElectrumLabels.importElectrum(account, metaData, file);
+         _toaster.toast("Labels are imported.", true);
 
       } catch (IOException|JSONException e) {
          _toaster.toast("Import failed. Check your logs", false);
