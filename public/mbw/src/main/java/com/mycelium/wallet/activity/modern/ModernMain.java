@@ -66,6 +66,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.mrd.bitlib.model.Address;
+import com.mrd.bitlib.model.NetworkParameters;
 import com.mycelium.net.ServerEndpointType;
 import com.mycelium.wallet.*;
 import com.mycelium.wallet.activity.AboutActivity;
@@ -488,8 +489,12 @@ public class ModernMain extends ActionBarActivity {
    private void importElectrumTransactionHistory() {
       WalletAccount account = _mbwManager.getSelectedAccount();
       MetadataStorage metaData = _mbwManager.getMetadataStorage();
+      NetworkParameters network = _mbwManager.getNetwork();
       try {
-         String fileName = "electrum_labels_testnet.json";
+         String fileName = "electrum_labels.json";
+         if (network.isTestnet())
+            fileName = "electrum_labels_testnet.json";
+
          File file = new File(Environment.getExternalStorageDirectory(), fileName);
          if (!file.exists()) {
            _toaster.toast(String.format("Import file \"%s\" does not exists on SD card.", file.getName()), false);
