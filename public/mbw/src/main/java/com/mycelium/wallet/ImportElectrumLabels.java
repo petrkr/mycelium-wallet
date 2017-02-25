@@ -40,9 +40,7 @@ import com.google.api.client.repackaged.com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.mrd.bitlib.model.Address;
 import com.mrd.bitlib.util.Sha256Hash;
-import com.mrd.bitlib.util.StringUtils;
 import com.mycelium.wallet.persistence.MetadataStorage;
-import com.mycelium.wapi.model.TransactionEx;
 import com.mycelium.wapi.wallet.WalletAccount;
 
 import java.io.File;
@@ -59,7 +57,6 @@ import static com.mycelium.wallet.Constants.TAG;
 
 public class ImportElectrumLabels {
    static InputStream is = null;
-   static JSONObject jObj = null;
 
    public static void importElectrum(WalletAccount account, MetadataStorage storage, File file) throws IOException, JSONException {
       List<String> lines = Files.readLines(file, Charset.forName("UTF-8"));
@@ -78,7 +75,6 @@ public class ImportElectrumLabels {
             Log.w(TAG, "importElectrum: Skipping record, key is empty");
             continue;
          }
-
 
          // TX ID have 64 chars
          if (key.length() == 64) {
