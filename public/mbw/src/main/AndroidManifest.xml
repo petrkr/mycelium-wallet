@@ -19,6 +19,11 @@
     <!-- location for local trader -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
+    <!-- read electrum export file -->
+    <uses-permission android:name="android.permission.STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
     <!-- we really don't want to spy on our users -->
     <uses-permission android:name="android.permission.READ_CONTACTS" tools:node="remove" />
 

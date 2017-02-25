@@ -46,6 +46,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
@@ -80,6 +81,9 @@ import com.mycelium.wallet.persistence.MetadataStorage;
 import com.mycelium.wapi.api.response.Feature;
 import com.mycelium.wapi.wallet.*;
 import com.squareup.otto.Subscribe;
+
+import org.json.JSONException;
+
 import de.cketti.library.changelog.ChangeLog;
 import info.guardianproject.onionkit.ui.OrbotHelper;
 
@@ -317,6 +321,7 @@ public class ModernMain extends ActionBarActivity {
       addEnglishSetting(menu.findItem(R.id.miSettings));
       inflater.inflate(R.menu.refresh, menu);
       inflater.inflate(R.menu.export_history, menu);
+      inflater.inflate(R.menu.import_electrum_history, menu);
       inflater.inflate(R.menu.record_options_menu_global, menu);
       inflater.inflate(R.menu.addressbook_options_global, menu);
       return true;
@@ -361,6 +366,9 @@ public class ModernMain extends ActionBarActivity {
 
       //export tx history
       Preconditions.checkNotNull(menu.findItem(R.id.miExportHistory)).setVisible(isHistoryTab);
+
+      //import electrum labels
+      Preconditions.checkNotNull(menu.findItem(R.id.miImportElectrumHistory)).setVisible(isHistoryTab);
 
       final boolean showSepaEntry = isBalanceTab && _mbwManager.getMetadataStorage().getCashilaIsEnabled();
       Preconditions.checkNotNull(menu.findItem(R.id.miSepaSend).setVisible(showSepaEntry));
@@ -438,6 +446,8 @@ public class ModernMain extends ActionBarActivity {
          });
       } else if (itemId == R.id.miExportHistory) {
          shareTransactionHistory();
+      } else if (itemId == R.id.miImportElectrumHistory) {
+         importElectrumTransactionHistory();
       }
       return super.onOptionsItemSelected(item);
    }
@@ -471,6 +481,20 @@ public class ModernMain extends ActionBarActivity {
          }
       } catch (IOException | PackageManager.NameNotFoundException e) {
          _toaster.toast("Export failed. Check your logs", false);
+         e.printStackTrace();
+      }
+   }
+
+   private void importElectrumTransactionHistory() {
+      WalletAccount account = _mbwManager.getSelectedAccount();
+      MetadataStorage metaData = _mbwManager.getMetadataStorage();
+      try {
+         String fileName = "electrum_labels_testnet.json";
+         File file = new File(Environment.getExternalStorageDirectory(), fileName);
+         ImportElectrumLabels.importElectrum(account, metaData, file);
+
+      } catch (IOException|JSONException e) {
+         _toaster.toast("Import failed. Check your logs", false);
          e.printStackTrace();
       }
    }
